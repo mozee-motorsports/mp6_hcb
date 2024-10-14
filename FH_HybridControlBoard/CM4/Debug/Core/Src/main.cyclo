@@ -1,0 +1,12 @@
+../Core/Src/main.c:98:5:main	2
+../Core/Src/main.c:201:6:PeriphCommonClock_Config	2
+../Core/Src/main.c:229:13:MX_ADC3_Init	5
+../Core/Src/main.c:300:13:MX_FDCAN1_Init	4
+../Core/Src/main.c:367:13:MX_FDCAN2_Init	2
+../Core/Src/main.c:420:13:MX_IWDG2_Init	3
+../Core/Src/main.c:456:13:MX_SDMMC1_SD_Init	3
+../Core/Src/main.c:494:13:MX_SPI1_Init	3
+../Core/Src/main.c:549:13:MX_WWDG2_Init	3
+../Core/Src/main.c:586:13:MX_GPIO_Init	1
+../Core/Src/main.c:613:6:StartDefaultTask	1
+../Core/Src/main.c:628:6:Error_Handler	1
