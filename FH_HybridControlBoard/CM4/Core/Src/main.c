@@ -52,13 +52,13 @@ ADC_HandleTypeDef hadc3;
 FDCAN_HandleTypeDef hfdcan1;
 FDCAN_HandleTypeDef hfdcan2;
 
-IWDG_HandleTypeDef hiwdg1;
+IWDG_HandleTypeDef hiwdg2;
 
 SD_HandleTypeDef hsd1;
 
 SPI_HandleTypeDef hspi1;
 
-WWDG_HandleTypeDef hwwdg1;
+WWDG_HandleTypeDef hwwdg2;
 
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -72,12 +72,13 @@ const osThreadAttr_t defaultTask_attributes = {
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-void PeriphCommonClock_Config(void);
-static void MPU_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_IWDG1_Init(void);
-static void MX_WWDG1_Init(void);
+static void MX_ADC3_Init(void);
+static void MX_FDCAN1_Init(void);
+static void MX_FDCAN2_Init(void);
+static void MX_IWDG2_Init(void);
+static void MX_SDMMC1_SD_Init(void);
+static void MX_SPI1_Init(void);
+static void MX_WWDG2_Init(void);
 void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -99,21 +100,21 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-/* USER CODE BEGIN Boot_Mode_Sequence_0 */
-  int32_t timeout;
-/* USER CODE END Boot_Mode_Sequence_0 */
-
-  /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
 
 /* USER CODE BEGIN Boot_Mode_Sequence_1 */
-  /* Wait until CPU2 boots and enters in stop mode or timeout*/
-  timeout = 0xFFFF;
-  while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
-  if ( timeout < 0 )
-  {
-  Error_Handler();
-  }
+  /*HW semaphore Clock enable*/
+  __HAL_RCC_HSEM_CLK_ENABLE();
+  /* Activate HSEM notification for Cortex-M4*/
+  HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
+  /*
+  Domain D2 goes to STOP mode (Cortex-M4 in deep-sleep) waiting for Cortex-M7 to
+  perform system initialization (system clock config, external memory configuration.. )
+  */
+  HAL_PWREx_ClearPendingEvent();
+  HAL_PWREx_EnterSTOPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFE, PWR_D2_DOMAIN);
+  /* Clear HSEM flag */
+  __HAL_HSEM_CLEAR_FLAG(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
+
 /* USER CODE END Boot_Mode_Sequence_1 */
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -124,28 +125,6 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* Configure the peripherals common clocks */
-  PeriphCommonClock_Config();
-/* USER CODE BEGIN Boot_Mode_Sequence_2 */
-/* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
-HSEM notification */
-/*HW semaphore Clock enable*/
-__HAL_RCC_HSEM_CLK_ENABLE();
-/*Take HSEM */
-HAL_HSEM_FastTake(HSEM_ID_0);
-/*Release HSEM in order to notify the CPU2(CM4)*/
-HAL_HSEM_Release(HSEM_ID_0,0);
-/* wait until CPU2 wakes up from stop mode */
-timeout = 0xFFFF;
-while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
-if ( timeout < 0 )
-{
-Error_Handler();
-}
-/* USER CODE END Boot_Mode_Sequence_2 */
   /* Resource Manager Utility initialisation ---------------------------------*/
   MX_RESMGR_UTILITY_Init();
 
@@ -154,9 +133,13 @@ Error_Handler();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_IWDG1_Init();
-  MX_WWDG1_Init();
+  MX_ADC3_Init();
+  MX_FDCAN1_Init();
+  MX_FDCAN2_Init();
+  MX_IWDG2_Init();
+  MX_SDMMC1_SD_Init();
+  MX_SPI1_Init();
+  MX_WWDG2_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
@@ -210,71 +193,6 @@ Error_Handler();
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void)
-{
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-  /** Supply configuration update enable
-  */
-  HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
-
-  /** Configure the main internal regulator output voltage
-  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  __HAL_RCC_SYSCFG_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
-
-  while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_DIV1;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 60;
-  RCC_OscInitStruct.PLL.PLLP = 2;
-  RCC_OscInitStruct.PLL.PLLQ = 5;
-  RCC_OscInitStruct.PLL.PLLR = 2;
-  RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
-  RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
-  RCC_OscInitStruct.PLL.PLLFRACN = 0;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2
-                              |RCC_CLOCKTYPE_D3PCLK1|RCC_CLOCKTYPE_D1PCLK1;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
-  RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
-
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-}
-
-/**
   * @brief Peripherals Common Clock Configuration
   * @retval None
   */
@@ -306,7 +224,7 @@ void PeriphCommonClock_Config(void)
   * @param None
   * @retval None
   */
-void MX_ADC3_Init(void)
+static void MX_ADC3_Init(void)
 {
 
   if (ResMgr_Request(RESMGR_ID_ADC3, RESMGR_FLAGS_ACCESS_NORMAL | \
@@ -377,7 +295,7 @@ void MX_ADC3_Init(void)
   * @param None
   * @retval None
   */
-void MX_FDCAN1_Init(void)
+static void MX_FDCAN1_Init(void)
 {
 
   if (ResMgr_Request(RESMGR_ID_FDCAN1, RESMGR_FLAGS_ACCESS_NORMAL | \
@@ -444,7 +362,7 @@ void MX_FDCAN1_Init(void)
   * @param None
   * @retval None
   */
-void MX_FDCAN2_Init(void)
+static void MX_FDCAN2_Init(void)
 {
 
   /* USER CODE BEGIN FDCAN2_Init 0 */
@@ -493,38 +411,38 @@ void MX_FDCAN2_Init(void)
 }
 
 /**
-  * @brief IWDG1 Initialization Function
+  * @brief IWDG2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_IWDG1_Init(void)
+static void MX_IWDG2_Init(void)
 {
 
-  if (ResMgr_Request(RESMGR_ID_IWDG1, RESMGR_FLAGS_ACCESS_NORMAL | \
-                  RESMGR_FLAGS_CPU1 , 0, NULL) != RESMGR_OK)
+  if (ResMgr_Request(RESMGR_ID_IWDG2, RESMGR_FLAGS_ACCESS_NORMAL | \
+                  RESMGR_FLAGS_CPU2 , 0, NULL) != RESMGR_OK)
   {
-    /* USER CODE BEGIN RESMGR_UTILITY_IWDG1 */
+    /* USER CODE BEGIN RESMGR_UTILITY_IWDG2 */
     Error_Handler();
-    /* USER CODE END RESMGR_UTILITY_IWDG1 */
+    /* USER CODE END RESMGR_UTILITY_IWDG2 */
   }
-  /* USER CODE BEGIN IWDG1_Init 0 */
+  /* USER CODE BEGIN IWDG2_Init 0 */
 
-  /* USER CODE END IWDG1_Init 0 */
+  /* USER CODE END IWDG2_Init 0 */
 
-  /* USER CODE BEGIN IWDG1_Init 1 */
+  /* USER CODE BEGIN IWDG2_Init 1 */
 
-  /* USER CODE END IWDG1_Init 1 */
-  hiwdg1.Instance = IWDG1;
-  hiwdg1.Init.Prescaler = IWDG_PRESCALER_4;
-  hiwdg1.Init.Window = 4095;
-  hiwdg1.Init.Reload = 4095;
-  if (HAL_IWDG_Init(&hiwdg1) != HAL_OK)
+  /* USER CODE END IWDG2_Init 1 */
+  hiwdg2.Instance = IWDG2;
+  hiwdg2.Init.Prescaler = IWDG_PRESCALER_4;
+  hiwdg2.Init.Window = 4095;
+  hiwdg2.Init.Reload = 4095;
+  if (HAL_IWDG_Init(&hiwdg2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN IWDG1_Init 2 */
+  /* USER CODE BEGIN IWDG2_Init 2 */
 
-  /* USER CODE END IWDG1_Init 2 */
+  /* USER CODE END IWDG2_Init 2 */
 
 }
 
@@ -533,7 +451,7 @@ static void MX_IWDG1_Init(void)
   * @param None
   * @retval None
   */
-void MX_SDMMC1_SD_Init(void)
+static void MX_SDMMC1_SD_Init(void)
 {
 
   if (ResMgr_Request(RESMGR_ID_SDMMC1, RESMGR_FLAGS_ACCESS_NORMAL | \
@@ -571,7 +489,7 @@ void MX_SDMMC1_SD_Init(void)
   * @param None
   * @retval None
   */
-void MX_SPI1_Init(void)
+static void MX_SPI1_Init(void)
 {
 
   if (ResMgr_Request(RESMGR_ID_SPI1, RESMGR_FLAGS_ACCESS_NORMAL | \
@@ -622,61 +540,40 @@ void MX_SPI1_Init(void)
 }
 
 /**
-  * @brief WWDG1 Initialization Function
+  * @brief WWDG2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_WWDG1_Init(void)
+static void MX_WWDG2_Init(void)
 {
 
-  if (ResMgr_Request(RESMGR_ID_WWDG1, RESMGR_FLAGS_ACCESS_NORMAL | \
-                  RESMGR_FLAGS_CPU1 , 0, NULL) != RESMGR_OK)
+  if (ResMgr_Request(RESMGR_ID_WWDG2, RESMGR_FLAGS_ACCESS_NORMAL | \
+                  RESMGR_FLAGS_CPU2 , 0, NULL) != RESMGR_OK)
   {
-    /* USER CODE BEGIN RESMGR_UTILITY_WWDG1 */
+    /* USER CODE BEGIN RESMGR_UTILITY_WWDG2 */
     Error_Handler();
-    /* USER CODE END RESMGR_UTILITY_WWDG1 */
+    /* USER CODE END RESMGR_UTILITY_WWDG2 */
   }
-  /* USER CODE BEGIN WWDG1_Init 0 */
+  /* USER CODE BEGIN WWDG2_Init 0 */
 
-  /* USER CODE END WWDG1_Init 0 */
+  /* USER CODE END WWDG2_Init 0 */
 
-  /* USER CODE BEGIN WWDG1_Init 1 */
+  /* USER CODE BEGIN WWDG2_Init 1 */
 
-  /* USER CODE END WWDG1_Init 1 */
-  hwwdg1.Instance = WWDG1;
-  hwwdg1.Init.Prescaler = WWDG_PRESCALER_1;
-  hwwdg1.Init.Window = 64;
-  hwwdg1.Init.Counter = 64;
-  hwwdg1.Init.EWIMode = WWDG_EWI_DISABLE;
-  if (HAL_WWDG_Init(&hwwdg1) != HAL_OK)
+  /* USER CODE END WWDG2_Init 1 */
+  hwwdg2.Instance = WWDG2;
+  hwwdg2.Init.Prescaler = WWDG_PRESCALER_1;
+  hwwdg2.Init.Window = 64;
+  hwwdg2.Init.Counter = 64;
+  hwwdg2.Init.EWIMode = WWDG_EWI_DISABLE;
+  if (HAL_WWDG_Init(&hwwdg2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN WWDG1_Init 2 */
+  /* USER CODE BEGIN WWDG2_Init 2 */
 
-  /* USER CODE END WWDG1_Init 2 */
+  /* USER CODE END WWDG2_Init 2 */
 
-}
-
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
-
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -699,35 +596,6 @@ void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END 5 */
-}
-
- /* MPU Configuration */
-
-void MPU_Config(void)
-{
-  MPU_Region_InitTypeDef MPU_InitStruct = {0};
-
-  /* Disables the MPU */
-  HAL_MPU_Disable();
-
-  /** Initializes and configures the Region and the memory to be protected
-  */
-  MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-  MPU_InitStruct.Number = MPU_REGION_NUMBER0;
-  MPU_InitStruct.BaseAddress = 0x0;
-  MPU_InitStruct.Size = MPU_REGION_SIZE_4GB;
-  MPU_InitStruct.SubRegionDisable = 0x87;
-  MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-  MPU_InitStruct.AccessPermission = MPU_REGION_NO_ACCESS;
-  MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-  MPU_InitStruct.IsShareable = MPU_ACCESS_SHAREABLE;
-  MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-  MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-
-  HAL_MPU_ConfigRegion(&MPU_InitStruct);
-  /* Enables the MPU */
-  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-
 }
 
 /**
