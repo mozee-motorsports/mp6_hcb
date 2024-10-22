@@ -67,8 +67,8 @@ all: main-build
 main-build: FH_HybrodControlBoard_CM4.elf secondary-outputs
 
 # Tool invocations
-FH_HybrodControlBoard_CM4.elf FH_HybrodControlBoard_CM4.map: $(OBJS) $(USER_OBJS) C:\Users\nimsgernd\OneDrive\ -\ Milwaukee\ School\ of\ Engineering\Documents\Formula\ Hybrid\mp6_hcb\FH_HybrodControlBoard\CM4\STM32H755ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "FH_HybrodControlBoard_CM4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\nimsgernd\OneDrive - Milwaukee School of Engineering\Documents\Formula Hybrid\mp6_hcb\FH_HybrodControlBoard\CM4\STM32H755ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="FH_HybrodControlBoard_CM4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+FH_HybrodControlBoard_CM4.elf FH_HybrodControlBoard_CM4.map: $(OBJS) $(USER_OBJS) C:\Users\nimsgernd\OneDrive\ -\ Milwaukee\ School\ of\ Engineering\Documents\Formula\ Hybrid\mp6_hcb\FH_HybridControlBoard\CM4\STM32H755ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "FH_HybrodControlBoard_CM4.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\nimsgernd\OneDrive - Milwaukee School of Engineering\Documents\Formula Hybrid\mp6_hcb\FH_HybridControlBoard\CM4\STM32H755ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="FH_HybrodControlBoard_CM4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

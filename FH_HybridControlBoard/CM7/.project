@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>FH_HybrodControlBoard_CM7</name>
+	<name>FH_HybridControlBoard_CM7</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -238,6 +238,16 @@
 			<name>Middlewares/Third_Party/FreeRTOS/timers.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/FreeRTOS/Source/timers.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/I-CUBE-CANOPEN/CANopen/emotas/codrv_canbittiming.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/emotas_CANopen/emotas/Config/codrv_canbittiming.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/I-CUBE-CANOPEN/CANopen/emotas/gen_objdict.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/emotas_CANopen/emotas/Config/gen_objdict.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
