@@ -52,11 +52,6 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
-void MX_ADC3_Init(void);
-void MX_FDCAN1_Init(void);
-void MX_FDCAN2_Init(void);
-void MX_SDMMC1_SD_Init(void);
-void MX_SPI1_Init(void);
 
 /* USER CODE BEGIN EFP */
 

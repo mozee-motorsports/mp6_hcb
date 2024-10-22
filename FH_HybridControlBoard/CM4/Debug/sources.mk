@@ -25,10 +25,10 @@ SUBDIRS := \
 Common/Src \
 Core/Src \
 Core/Startup \
+Core/ThreadSafe \
 Drivers/STM32H7xx_HAL_Driver \
 FATFS/App \
 FATFS/Target \
-Middlewares/I-CUBE-CANOPEN/CANopen/emotas \
 Middlewares/Third_Party/FatFs \
 Middlewares/Third_Party/FreeRTOS \
 Utilities \

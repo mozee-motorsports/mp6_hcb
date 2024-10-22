@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>FH_HybridControlBoard_CM7</name>
+	<name>FH_HybrodControlBoard_CM7</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -40,19 +40,19 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Utilities/ResourcesManager/res_mgr.c</locationURI>
 		</link>
 		<link>
+			<name>Core/ThreadSafe/newlib_lock_glue.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/ThreadSafe/newlib_lock_glue.c</locationURI>
+		</link>
+		<link>
+			<name>Core/ThreadSafe/stm32_lock.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/ThreadSafe/stm32_lock.h</locationURI>
+		</link>
+		<link>
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_adc.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_adc_ex.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_cortex.c</name>
@@ -120,6 +120,16 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_mdma.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_pcd.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_pcd_ex.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pcd_ex.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_pwr.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_pwr.c</locationURI>
@@ -140,26 +150,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rcc_ex.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_sd.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_sd_ex.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd_ex.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_spi.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c</locationURI>
-		</link>
-		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_spi_ex.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi_ex.c</locationURI>
-		</link>
-		<link>
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_tim.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_tim.c</locationURI>
@@ -175,34 +165,29 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_wwdg.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_ll_delayblock.c</name>
+			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_ll_usb.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_delayblock.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</locationURI>
 		</link>
 		<link>
-			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_ll_sdmmc.c</name>
+			<name>Middlewares/ST/STM32_USB_Device_Library/usbd_cdc.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_sdmmc.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/Third_Party/FatFs/diskio.c</name>
+			<name>Middlewares/ST/STM32_USB_Device_Library/usbd_core.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/FatFs/src/diskio.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/Third_Party/FatFs/ff.c</name>
+			<name>Middlewares/ST/STM32_USB_Device_Library/usbd_ctlreq.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/FatFs/src/ff.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/Third_Party/FatFs/ff_gen_drv.c</name>
+			<name>Middlewares/ST/STM32_USB_Device_Library/usbd_ioreq.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/FatFs/src/ff_gen_drv.c</locationURI>
-		</link>
-		<link>
-			<name>Middlewares/Third_Party/FatFs/syscall.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/FatFs/src/option/syscall.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/Third_Party/FreeRTOS/cmsis_os2.c</name>
