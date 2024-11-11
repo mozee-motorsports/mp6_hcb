@@ -22,11 +22,8 @@
 #include "adc.h"
 #include "fatfs.h"
 #include "i2c.h"
-#include "iwdg.h"
 #include "sdmmc.h"
-#include "spi.h"
-#include "wwdg.h"
-#include "gpio.h"
+#include "usart.h"
 #include "resmgr_utility.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -113,13 +110,10 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
   MX_ADC3_Init();
-  MX_I2C1_Init();
-  MX_IWDG2_Init();
   MX_SDMMC1_SD_Init();
-  MX_SPI1_Init();
-  MX_WWDG2_Init();
+  MX_I2C1_Init();
+  MX_USART1_UART_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 

@@ -58,6 +58,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define VCP_TX_Pin GPIO_PIN_8
+#define VCP_TX_GPIO_Port GPIOD
+#define VCP_RX_Pin GPIO_PIN_9
+#define VCP_RX_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
 

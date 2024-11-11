@@ -54,6 +54,27 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for CANInterface */
+osThreadId_t CANInterfaceHandle;
+const osThreadAttr_t CANInterface_attributes = {
+  .name = "CANInterface",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal,
+};
+/* Definitions for HybridControlAl */
+osThreadId_t HybridControlAlHandle;
+const osThreadAttr_t HybridControlAl_attributes = {
+  .name = "HybridControlAl",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for VCOM */
+osThreadId_t VCOMHandle;
+const osThreadAttr_t VCOM_attributes = {
+  .name = "VCOM",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityBelowNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -61,9 +82,28 @@ const osThreadAttr_t defaultTask_attributes = {
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
+void StartTaskCANI(void *argument);
+void StartTaskHCA(void *argument);
+void StartTaskVCOM(void *argument);
 
-extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/* Hook prototypes */
+void configureTimerForRunTimeStats(void);
+unsigned long getRunTimeCounterValue(void);
+
+/* USER CODE BEGIN 1 */
+/* Functions needed when configGENERATE_RUN_TIME_STATS is on */
+__weak void configureTimerForRunTimeStats(void)
+{
+
+}
+
+__weak unsigned long getRunTimeCounterValue(void)
+{
+return 0;
+}
+/* USER CODE END 1 */
 
 /**
   * @brief  FreeRTOS initialization
@@ -95,6 +135,15 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
+  /* creation of CANInterface */
+  CANInterfaceHandle = osThreadNew(StartTaskCANI, NULL, &CANInterface_attributes);
+
+  /* creation of HybridControlAl */
+  HybridControlAlHandle = osThreadNew(StartTaskHCA, NULL, &HybridControlAl_attributes);
+
+  /* creation of VCOM */
+  VCOMHandle = osThreadNew(StartTaskVCOM, NULL, &VCOM_attributes);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -114,8 +163,6 @@ void MX_FREERTOS_Init(void) {
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void *argument)
 {
-  /* init code for USB_DEVICE */
-  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
   for(;;)
@@ -123,6 +170,60 @@ void StartDefaultTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
+}
+
+/* USER CODE BEGIN Header_StartTaskCANI */
+/**
+* @brief Function implementing the CANInterface thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTaskCANI */
+void StartTaskCANI(void *argument)
+{
+  /* USER CODE BEGIN StartTaskCANI */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTaskCANI */
+}
+
+/* USER CODE BEGIN Header_StartTaskHCA */
+/**
+* @brief Function implementing the HybridControlAl thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTaskHCA */
+void StartTaskHCA(void *argument)
+{
+  /* USER CODE BEGIN StartTaskHCA */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTaskHCA */
+}
+
+/* USER CODE BEGIN Header_StartTaskVCOM */
+/**
+* @brief Function implementing the VCOM thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTaskVCOM */
+void StartTaskVCOM(void *argument)
+{
+  /* USER CODE BEGIN StartTaskVCOM */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartTaskVCOM */
 }
 
 /* Private application code --------------------------------------------------*/
