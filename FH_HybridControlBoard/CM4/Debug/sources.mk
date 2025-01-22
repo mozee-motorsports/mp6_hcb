@@ -22,12 +22,14 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Common/Src \
 Core/Src \
 Core/Startup \
 Core/ThreadSafe \
 Drivers/STM32H7xx_HAL_Driver \
 FATFS/App \
 FATFS/Target \
+Middlewares/Third_Party/FatFs \
 Middlewares/Third_Party/FreeRTOS \
 Utilities \
 
