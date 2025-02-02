@@ -21,8 +21,9 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "fatfs.h"
+#include "fdcan.h"
 #include "i2c.h"
-#include "rng.h"
+#include "rtc.h"
 #include "sdmmc.h"
 #include "usart.h"
 #include "resmgr_utility.h"
@@ -116,7 +117,9 @@ int main(void)
   MX_I2C1_Init();
   MX_USART1_UART_Init();
   MX_FATFS_Init();
-  MX_RNG_Init();
+  MX_RTC_Init();
+  MX_FDCAN1_Init();
+  MX_FDCAN2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */

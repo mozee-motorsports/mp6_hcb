@@ -61,11 +61,6 @@ void MX_ADC3_Init(void)
   {
     Error_Handler();
   }
-  hadc3.Init.Resolution = ADC_RESOLUTION_16B;
-  if (HAL_ADC_Init(&hadc3) != HAL_OK)
-  {
-    Error_Handler();
-  }
 
   /** Configure Regular Channel
   */
@@ -100,8 +95,8 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
   */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
     PeriphClkInitStruct.PLL2.PLL2M = 2;
-    PeriphClkInitStruct.PLL2.PLL2N = 12;
-    PeriphClkInitStruct.PLL2.PLL2P = 3;
+    PeriphClkInitStruct.PLL2.PLL2N = 13;
+    PeriphClkInitStruct.PLL2.PLL2P = 2;
     PeriphClkInitStruct.PLL2.PLL2Q = 2;
     PeriphClkInitStruct.PLL2.PLL2R = 2;
     PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_3;
